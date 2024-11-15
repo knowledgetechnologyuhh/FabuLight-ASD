@@ -4,8 +4,6 @@ This repository contains the code of FabuLight-ASD (**F**ace, **a**udio, and **b
 
 FabuLight-ASD is an active speaker detection model based on [Light-ASD](https://github.com/Junhua-Liao/Light-ASD), which incorporates body pose as an additional modality.
 
-FabuLight-ASD is to be published in the paper titled **FabuLight-ASD: Unveiling Speech Activity via Body Language**, which is currently under double-blind review at Neural Computing and Applications.
-
 ***
 
 ## Dependencies
