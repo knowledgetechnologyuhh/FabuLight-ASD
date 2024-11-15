@@ -1,0 +1,21 @@
+--extra-index-url https://download.pytorch.org/whl/cu118
+argparse
+gdown
+h5py
+logging
+matplotlib
+moviepy
+numpy
+onnxruntime-gpu
+opencv-python
+pandas
+python-speech-features
+psutil
+rtmlib
+scipy
+sox
+sounddevice
+torch
+torchvision
+tqdm
+wheel
