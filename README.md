@@ -17,7 +17,7 @@ python3 -m pip install -r requirements.txt
 
 ### Dataset download and feature extraction
 
-In order to train the model, it is suggested to download the [WASD dataset](https://tiago-roxo.github.io/WASD/).
+To train the model, it is suggested to download the [WASD dataset](https://tiago-roxo.github.io/WASD/).
 
 Files ***prepare_setup.py*** and ***create_dataset.py*** are responsible for the creation of the dataset folder structure and downloading the WASD dataset, and the subsequent extraction of audio, face crops, and body crops.
 
@@ -41,7 +41,7 @@ There is a tiny inconsistency in the body and face crops of some individuals in 
 * ***0.07.png*** at subfolder ***WASD/clip_videos/WZkEgX7lfQs_10-35/WZkEgX7lfQs_10-35_0000_0060_4***
 * ***0.07.png*** at subfolder ***WASD/clip_videos/WZkEgX7lfQs_10-35/WZkEgX7lfQs_10-35_0000_0060_5***
 
-The removal of the aforementioned face crops from the ***WASD/clip_videos*** might lead to other error messages during training, which can be fixed by updating ***WASD/csv/train_loader.csv*** and ***WASD/csv/train_loader_body.csv*** with the versions avaiable at [https://drive.google.com/file/d/1abR-IwGruU0ejX3TlVBmbYo65JBSw_fF].
+The removal of the aforementioned face crops from the ***WASD/clip_videos*** might lead to other error messages during training, which can be fixed by updating ***WASD/csv/train_loader.csv*** and ***WASD/csv/train_loader_body.csv*** with the versions available at https://drive.google.com/file/d/1abR-IwGruU0ejX3TlVBmbYo65JBSw_fF.
 
 Additionally, extract ***train_orig_kp_body.csv*** and ***val_orig_kp_body.csv*** to the same subfolder (***WASD/csv***). These CSVs contain the body joint coordinate data for every individual in each frame.
 
@@ -49,7 +49,7 @@ Additionally, extract ***train_orig_kp_body.csv*** and ***val_orig_kp_body.csv**
 
 ## Training the model
 
-To train the model, on should execute ***fabulight.py***, which includes a variety of arguments:
+To train the model, one should execute ***fabulight.py***, which includes a variety of arguments:
 
 * mode: execution mode (train, test, or demo) (***default: test***)
 * lr: initial learning rate (***default: 0.001***)
@@ -64,8 +64,8 @@ To train the model, on should execute ***fabulight.py***, which includes a varie
 * initialTemp: initial temperature value (utilised during training) (***default: 1.3***)
 * tempDecayType: type of decay employed by the temperature (***default: linear***)
 * tempDecayRate: rate of decay of the temperature (***default: 0.02 per epoch***)
-* sizeVideoInput: dimension of the width of the face crops in pixels (***default: 112***)
-* bodyPose: whether body pose will be utilised as an additonal modality (***default: false***)
+* sizeVideoInput: the dimension of the width of the face crops in pixels (***default: 112***)
+* bodyPose: whether body pose will be utilised as an additional modality (***default: false***)
 * bodyPoseAugProb: probability a body joint is selected for augmentation (***default: 0***)
 * bodyPoseAugMag: maximum alteration in the position of the selected body joint (***default: 0***)
 * upperBody: whether only the body joints from the upper body would be employed (***default: false***)
@@ -73,7 +73,7 @@ To train the model, on should execute ***fabulight.py***, which includes a varie
 
 Most model parameters keep the original values employed at [Light-ASD](https://github.com/Junhua-Liao/Light-ASD)'s implementation.
 
-Utilising the set of arguments above, the trained model will be saved at the ***exps*** subfolder, and within it, in a subfolder that uniquely identifies that model based on the arguments .
+Utilising the set of arguments above, the trained model will be saved at the ***exps*** subfolder, and within it, in a subfolder that uniquely identifies that model based on the arguments.
 
 If one wants to fine-tune or evaluate an existing model, by executing ***fabulight.py*** with the same parameters that produced the model in the first place, the program is capable of retrieving the existing model and fine-tune it (or continue its training) from its last epoch, or to evaluate its performance at the epoch in which it achieved its highest performance metrics.
 
@@ -95,7 +95,7 @@ Among the provided models, there is the model at folder ***exps/exp_0.001_0.95_6
 * body pose as an additional modality: False (indicated as ***F*** in the subfolder name)
 * id: ***fabulight***
 
-The ***exp*** at the beginning of the subfolder string and the ***config*** at its end are arbitrary strings present in all subfolders. Their semantics are of "experiment" and "configuration" as they represent model configurations from specific experiments that have been conducted.
+The ***exp*** at the beginning of the subfolder string and the ***config*** at its end are arbitrary strings present in all subfolders. Their semantics are respectively "experiment" and "configuration" as they represent model configurations from specific experiments that have been conducted.
 
 In ***exps/exp_0.001_0.95_60_2000_Adam_epochStep_0.0_1.3_linear_0.02_112_F_fabulight_config/model***, one can find the model at its highest performing instance (***best_0044.model***), which was obtained at its 27th epoch, and its instance at its last training epoch (***last_0060.model***).
 
@@ -104,7 +104,7 @@ To fine-tune the model, one needs simply to execute the following command:
 python3 fabulight.py --mode train --maxEpoch 60 --id fabulight
 ```
 
-Please notice that only the arguments whose valuees differ from the default ones must be provided.
+Please notice that only the arguments whose values differ from the default ones must be provided.
 
 Please notice as well that perhaps 64 concurrent dataloader workers might be too much depending on the available architecture. Include the argument ***--nDataLoaderThread*** followed by the adequate number of dataloader workers, if necessary.
 
@@ -122,7 +122,7 @@ python3 fabulight.py --mode demo --maxEpoch 60 --id fabulight
 
 ### Upper body
 
-At ***exps*** folder, one can also find the subfolder ***exps/exp_0.001_0.95_60_2000_Adam_epochStep_0.0_1.3_linear_0.02_112_T_0.0_0.0_upper_fabulight_config***, which is model presented in the paper which utilises information from the body joints exclusively from the upper body. The subfolder name identifies the following arguments of the model:
+In ***exps*** folder, one can also find the subfolder ***exps/exp_0.001_0.95_60_2000_Adam_epochStep_0.0_1.3_linear_0.02_112_T_0.0_0.0_upper_fabulight_config***, which is model presented in the paper which utilises information from the body joints exclusively from the upper body. The subfolder name identifies the following arguments of the model:
 
 * initial learning rate: ***0.001***
 * learning rate decay: ***0.95***
@@ -160,7 +160,7 @@ python3 fabulight.py --mode demo --maxEpoch 60 --bodyPose --id fabulight
 
 ### Whole body
 
-At that folder, one can also find the subfolder ***exps/exp_0.001_0.95_60_2000_Adam_epochStep_0.0_1.3_linear_0.02_112_T_0.0_0.0_whole_fabulight_config***, which is model presented in the paper which utilises information from the body joints from the whole body. The subfolder name identifies the following arguments of the model:
+In that folder, one can also find the subfolder ***exps/exp_0.001_0.95_60_2000_Adam_epochStep_0.0_1.3_linear_0.02_112_T_0.0_0.0_whole_fabulight_config***, which is model presented in the paper which utilises information from the body joints from the whole body. The subfolder name identifies the following arguments of the model:
 
 * initial learning rate: ***0.001***
 * learning rate decay: ***0.95***
