@@ -1,6 +1,6 @@
 # FabuLight-ASD
 
-This repository contains the code of FabuLight-ASD (**F**ace, **a**udio, and **b**ody **u**tilisation for **Light**weight **A**ctive **S**peaker **D**etection) as well as some saved model weights.
+This repository contains the code of [FabuLight-ASD](https://arxiv.org/abs/2411.13674) (**F**ace, **a**udio, and **b**ody **u**tilisation for **Light**weight **A**ctive **S**peaker **D**etection) as well as some saved model weights.
 
 FabuLight-ASD is an active speaker detection model based on [Light-ASD](https://github.com/Junhua-Liao/Light-ASD), which incorporates body pose as an additional modality.
 
@@ -41,7 +41,11 @@ There is a tiny inconsistency in the body and face crops of some individuals in 
 * ***0.07.png*** at subfolder ***WASD/clip_videos/WZkEgX7lfQs_10-35/WZkEgX7lfQs_10-35_0000_0060_4***
 * ***0.07.png*** at subfolder ***WASD/clip_videos/WZkEgX7lfQs_10-35/WZkEgX7lfQs_10-35_0000_0060_5***
 
+<<<<<<< HEAD
 The removal of the aforementioned face crops from the ***WASD/clip_videos*** might lead to other error messages during training, which can be fixed by updating ***WASD/csv/train_loader.csv*** and ***WASD/csv/train_loader_body.csv*** with the versions available at https://drive.google.com/file/d/1abR-IwGruU0ejX3TlVBmbYo65JBSw_fF.
+=======
+The removal of the aforementioned face crops from the ***WASD/clip_videos*** might lead to other error messages during training, which can be fixed by updating ***WASD/csv/train_loader.csv*** and ***WASD/csv/train_loader_body.csv*** with the versions avaiable at [this link](https://www2.informatik.uni-hamburg.de/wtm/corpora/WASD_updated_csvs_with_body_pose_information.tar.gz).
+>>>>>>> a4a1446 (Updating README to include arXiv reference and link to new web repository with the modified WASD dataset CSV files.)
 
 Additionally, extract ***train_orig_kp_body.csv*** and ***val_orig_kp_body.csv*** to the same subfolder (***WASD/csv***). These CSVs contain the body joint coordinate data for every individual in each frame.
 
@@ -205,10 +209,8 @@ In case you used FabuLight-ASD for your research, please cite the following pape
 @article{carneiro2024fabulightasd,
 	title = {{FabuLight-ASD}: Unveiling Speech Activity via Body Language},
 	author = {Hugo Carneiro and Stefan Wermter},
-	journal = {Neural Computing and Applications},
-	volume = {},
-	pages = {},
 	year = {2024},
-	doi = {10.1016/}
+	doi = {10.48550/arXiv.2411.13674},
+	note = {Accepted for publication in Neural Computing and Applications (to appear)}
 }
 ```
