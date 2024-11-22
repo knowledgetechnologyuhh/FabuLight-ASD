@@ -41,12 +41,7 @@ There is a tiny inconsistency in the body and face crops of some individuals in 
 * ***0.07.png*** at subfolder ***WASD/clip_videos/WZkEgX7lfQs_10-35/WZkEgX7lfQs_10-35_0000_0060_4***
 * ***0.07.png*** at subfolder ***WASD/clip_videos/WZkEgX7lfQs_10-35/WZkEgX7lfQs_10-35_0000_0060_5***
 
-<<<<<<< HEAD
-The removal of the aforementioned face crops from the ***WASD/clip_videos*** might lead to other error messages during training, which can be fixed by updating ***WASD/csv/train_loader.csv*** and ***WASD/csv/train_loader_body.csv*** with the versions available at https://drive.google.com/file/d/1abR-IwGruU0ejX3TlVBmbYo65JBSw_fF.
-=======
 The removal of the aforementioned face crops from the ***WASD/clip_videos*** might lead to other error messages during training, which can be fixed by updating ***WASD/csv/train_loader.csv*** and ***WASD/csv/train_loader_body.csv*** with the versions avaiable at [this link](https://www2.informatik.uni-hamburg.de/wtm/corpora/WASD_updated_csvs_with_body_pose_information.tar.gz).
->>>>>>> a4a1446 (Updating README to include arXiv reference and link to new web repository with the modified WASD dataset CSV files.)
-
 Additionally, extract ***train_orig_kp_body.csv*** and ***val_orig_kp_body.csv*** to the same subfolder (***WASD/csv***). These CSVs contain the body joint coordinate data for every individual in each frame.
 
 ***
