@@ -3,6 +3,7 @@ import glob, pickle
 import random, os, shutil
 import numpy as np
 import torch
+import torch.nn.functional as F
 
 from dataLoader import train_loader, val_loader
 from ASD import ASD
@@ -82,7 +83,7 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, **kwargs):
         speakers_in_last_frame = []
         map_num_frames_to_spk_id = dict()
         for spk_id, spk_body_bbox, kp_data, kp_score in zip(tracker.track_ids_last_frame, tracker.bboxes_last_frame, keypoints, scores):
-            if max(kp_score) >= pose_recognising_min_score:
+            if max(kp_score) >= 0.75: #pose_recognising_min_score:
                 # Deduce head bounding box from head keypoints
                 face_xc = sum(kp_data[: 5, 0]) / 5
                 face_yc = sum(kp_data[: 5, 1]) / 5
@@ -151,7 +152,7 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, **kwargs):
         det_time = time.time() - start_time
         #print('det after extracting audio features: ', det_time)
         
-         for num_frames in map_num_frames_to_spk_id:
+        for num_frames in map_num_frames_to_spk_id:
             with torch.no_grad():
                 faceFeature = torch.FloatTensor(np.array([spk_data[spk_id]["face_crop"] for spk_id in map_num_frames_to_spk_id[num_frames]])).to(device)
                 audioFeature = torch.FloatTensor(np.array([spk_data[spk_id]["audio"] for spk_id in map_num_frames_to_spk_id[num_frames]])).to(device)
@@ -160,12 +161,13 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, **kwargs):
                 if bodyPose:
                     bodyFeature = torch.FloatTensor(np.array([spk_data[spk_id]["kp_central"] for spk_id in map_num_frames_to_spk_id[num_frames]])).to(device)
                     outsFAB, _, _, _= asd_model.model(faceFeature, audioFeature, bodyFeature[:, :, : 11, :] if upperBody else bodyFeature)
-                    out_score = model.lossFAB.module.FC(outsFAB.squeeze(1))[-1]
+                    out_score = asd_model.lossFAB.module.FC(outsFAB.squeeze(1)) #[-1]
                 else:
                     outsFA, _, _ = asd_model.model(faceFeature, audioFeature, None)
-                    out_score = model.lossFA.module.FC(outsFA.squeeze(1))[-1]
-                predScore = F.softmax(score_sum, dim = -1)[1]
-                spk_data[spk_id]["speaking"] = predScore
+                    out_score = asd_model.lossFA.module.FC(outsFA.squeeze(1)) #[-1]
+                predScore = F.softmax(out_score, dim = -1)[:, 1]
+                for idx, spk_id in enumerate(map_num_frames_to_spk_id[num_frames]):
+                    spk_data[spk_id]["speaking"] = predScore[idx].detach().cpu().numpy()
         
         det_time = time.time() - start_time
         #print('det after processing: ', det_time)
@@ -181,7 +183,7 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, **kwargs):
         for spk_id in speakers_in_last_frame:
             num_frames = len(spk_data[spk_id]["face_bbox"])
             if num_frames > 0:
-                cv2.rectangle(img_show, (spk_data[spk_id]["face_bbox"][-1][0], spk_data[spk_id]["face_bbox"][-1][1]), (spk_data[spk_id]["face_bbox"][-1][2], spk_data[spk_id]["face_bbox"][-1][3]), (0, 255 if spk_data[spk_id]["speaking"][-1] >= speech_activity_acceptance_thr else 0, 0 if spk_data[spk_id]["speaking"][-1] >= speech_activity_acceptance_thr else 255), 2)
+                cv2.rectangle(img_show, (spk_data[spk_id]["face_bbox"][-1][0], spk_data[spk_id]["face_bbox"][-1][1]), (spk_data[spk_id]["face_bbox"][-1][2], spk_data[spk_id]["face_bbox"][-1][3]), (0, 255 if spk_data[spk_id]["speaking"] >= speech_activity_acceptance_thr else 0, 0 if spk_data[spk_id]["speaking"] >= speech_activity_acceptance_thr else 255), 2)
 
         img_show = cv2.resize(img_show, (1440, 1080))
         cv2.imshow('img', img_show)
@@ -276,6 +278,7 @@ def main():
         model_files = glob.glob('%s/last_0*.model'%args.modelSavePath)
     else:
         model_files = glob.glob('%s/best_0*.model'%args.modelSavePath)
+        print(model_files)
     
     mAPs = []
     if len(model_files) >= 1:
