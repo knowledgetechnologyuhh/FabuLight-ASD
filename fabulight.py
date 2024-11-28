@@ -32,7 +32,7 @@ def seed_worker(worker_id):
     random.seed(worker_seed)
 
 
-def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, **kwargs):
+def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recignising_min_score = 0.8, **kwargs):
     device = 'cuda'
     backend = 'onnxruntime'  # opencv, onnxruntime, openvino
     openpose_skeleton = False  # True for openpose-style, False for mmpose-style
@@ -83,7 +83,7 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, **kwargs):
         speakers_in_last_frame = []
         map_num_frames_to_spk_id = dict()
         for spk_id, spk_body_bbox, kp_data, kp_score in zip(tracker.track_ids_last_frame, tracker.bboxes_last_frame, keypoints, scores):
-            if max(kp_score) >= 0.75: #pose_recognising_min_score:
+            if max(kp_score) >= pose_recognising_min_score:
                 # Deduce head bounding box from head keypoints
                 face_xc = sum(kp_data[: 5, 0]) / 5
                 face_yc = sum(kp_data[: 5, 1]) / 5
