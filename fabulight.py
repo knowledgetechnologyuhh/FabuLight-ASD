@@ -32,7 +32,7 @@ def seed_worker(worker_id):
     random.seed(worker_seed)
 
 
-def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recignising_min_score = 0.8, **kwargs):
+def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recognising_min_score = 0.8, **kwargs):
     device = 'cuda'
     backend = 'onnxruntime'  # opencv, onnxruntime, openvino
     openpose_skeleton = False  # True for openpose-style, False for mmpose-style
@@ -60,8 +60,9 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recignisin
         
         new_data = indata[:, 0].flatten()
         audio_buffer = np.concatenate((audio_buffer, new_data))
-        if audio_buffer.shape[0] > 4 * max_win_size:
-            audio_buffer = audio_buffer[-4 * max_win_size :]
+        
+        if audio_buffer.shape[0] > 4 * max_win_size * int(chunk_size * audio_sr):
+            audio_buffer = audio_buffer[-4 * max_win_size * int(chunk_size * audio_sr) :]
     
     audio_stream = sd.InputStream(callback=audio_callback, channels=1, samplerate=audio_sr, blocksize=int(chunk_size * audio_sr))
     audio_stream.start()
