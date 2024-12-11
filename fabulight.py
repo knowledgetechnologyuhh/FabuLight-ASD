@@ -48,25 +48,32 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recognisin
     
     audio_sr = 16000
     chunk_size = 0.1  # Audio chunk size in seconds (100ms)
+    audio_stream_blocksize = int(chunk_size * audio_sr)
     max_win_size = 120
     speech_activity_acceptance_thr = 0.5
-    
+
     asd_model.eval()
     asd_model.to(device)
     audio_buffer = np.array([])
-    
+
+    cap = cv2.VideoCapture(0)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    # Calculate the maximum audio buffer size to align with the input window size of the model.
+    # The buffer accommodates four times the video frames, adjusted for frame rate (fps) and chunk size (100 ms)
+    max_audio_buffer_size = int(np.ceil(4 * max_win_size * 0.1  * 25 / fps * audio_stream_blocksize))
+
     def audio_callback(indata, frames, time, status):
-        nonlocal audio_buffer, max_win_size
+        nonlocal audio_buffer, max_win_size, max_audio_buffer_size
         
         new_data = indata[:, 0].flatten()
         audio_buffer = np.concatenate((audio_buffer, new_data))
         
-        if audio_buffer.shape[0] > 4 * max_win_size * int(chunk_size * audio_sr):
-            audio_buffer = audio_buffer[-4 * max_win_size * int(chunk_size * audio_sr) :]
-    
-    audio_stream = sd.InputStream(callback=audio_callback, channels=1, samplerate=audio_sr, blocksize=int(chunk_size * audio_sr))
+        if audio_buffer.shape[0] > max_audio_buffer_size:
+            audio_buffer = audio_buffer[-max_audio_buffer_size :]
+
+    audio_stream = sd.InputStream(callback=audio_callback, channels=1, samplerate=audio_sr, blocksize=audio_stream_blocksize)
     audio_stream.start()
-    cap = cv2.VideoCapture(0)
             
     spk_data = dict()
     frame_idx = 0
@@ -137,7 +144,6 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recognisin
         det_time = time.time() - start_time
         #print('det after extracting video features: ', det_time)
         
-        fps = cap.get(cv2.CAP_PROP_FPS)
         full_audio_mfcc = python_speech_features.mfcc(audio_buffer, 16000, nfft = 1024, numcep = 13, winlen = 0.25 * chunk_size * 25 / fps, winstep = 0.1 * chunk_size * 25 / fps)
         
         for num_frames in map_num_frames_to_spk_id:

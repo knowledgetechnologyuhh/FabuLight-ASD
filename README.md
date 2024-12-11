@@ -155,7 +155,7 @@ python3 fabulight.py --mode test --maxEpoch 60 --bodyPose --upperBody --id fabul
 
 To employ the model at its highest performing checkpoint in a demo utilising the computer's camera:
 ```
-python3 fabulight.py --mode demo --maxEpoch 60 --bodyPose --id fabulight
+python3 fabulight.py --mode demo --maxEpoch 60 --bodyPose --upperBody --id fabulight
 ```
 
 ### Whole body
@@ -207,6 +207,6 @@ In case you used FabuLight-ASD for your research, please cite the following pape
 	author = {Hugo Carneiro and Stefan Wermter},
 	year = {2024},
 	doi = {10.48550/arXiv.2411.13674},
-	note = {Accepted for publication in Neural Computing and Applications (to appear)}
+	note = {Accepted for publication in Neural Computing and Applications (in production, doi: 10.1007/s00521-024-10792-0)}
 }
 ```
