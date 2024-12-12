@@ -61,7 +61,7 @@ def execute_demo(asd_model, sizeVideoInput, bodyPose, upperBody, pose_recognisin
 
     # Calculate the maximum audio buffer size to align with the input window size of the model.
     # The buffer accommodates four times the video frames, adjusted for frame rate (fps) and chunk size (100 ms)
-    max_audio_buffer_size = int(np.ceil(4 * max_win_size * 0.1  * 25 / fps * audio_stream_blocksize))
+    max_audio_buffer_size = int(np.ceil(4 * max_win_size * 0.1 * 25 / fps * audio_stream_blocksize))
 
     def audio_callback(indata, frames, time, status):
         nonlocal audio_buffer, max_win_size, max_audio_buffer_size
